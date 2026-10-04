@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
+import { default as helmet } from "helmet";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./lib/http.js";
 import { authRouter } from "./routes/auth.js";
