@@ -1,6 +1,5 @@
 import cors from "cors";
 import express from "express";
-import { default as helmet } from "helmet";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./lib/http.js";
 import { authRouter } from "./routes/auth.js";
@@ -14,11 +13,6 @@ import { simulatorRouter } from "./routes/simulator.js";
 import { env } from "./config/env.js";
 
 const app = express();
-
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false,
-}));
 
 app.use(
   cors({
