@@ -1,0 +1,21 @@
+{
+  "name": "aegistrace",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=20.19.0" },
+  "workspaces": ["apps/api", "apps/web"],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,green \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm --workspace api run dev",
+    "dev:web": "npm --workspace web run dev",
+    "build": "npm --workspace api run build && npm --workspace web run build",
+    "typecheck": "npm --workspace api run typecheck && npm --workspace web run typecheck",
+    "lint": "npm --workspace api run lint && npm --workspace web run lint",
+    "test": "npm --workspace api test",
+    "db:generate": "npm --workspace api run db:generate",
+    "db:migrate": "npm --workspace api run db:migrate",
+    "db:deploy": "npm --workspace api run db:deploy",
+    "db:seed": "npm --workspace api run db:seed"
+  },
+  "devDependencies": { "concurrently": "^9.2.1" }
+}

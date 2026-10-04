@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ANALYST
+  ADMIN
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ThreatStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  FALSE_POSITIVE
+}
+
+enum IncidentStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique @db.VarChar(320)
+  name         String       @db.VarChar(120)
+  passwordHash String       @db.VarChar(255)
+  role         Role         @default(ANALYST)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  sessions     Session[]
+  incidents    Incident[]
+  incidentNotes IncidentNote[]
+  auditLogs    AuditLog[]
+
+  @@index([createdAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique @db.Char(64)
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Event {
+  id               String       @id @default(cuid())
+  occurredAt       DateTime
+  sourceIp         String       @db.VarChar(45)
+  method           String       @db.VarChar(12)
+  path             String       @db.VarChar(2048)
+  statusCode       Int
+  userAgent        String?      @db.VarChar(1024)
+  username         String?      @db.VarChar(320)
+  requestMetadata  Json         @default("{}")
+  responseMetadata Json         @default("{}")
+  rawEvidence      Json         @default("{}")
+  createdAt        DateTime     @default(now())
+  threats          ThreatEvent[]
+
+  @@index([occurredAt])
+  @@index([sourceIp, occurredAt])
+  @@index([statusCode, occurredAt])
+}
+
+model DetectionRule {
+  id          String    @id @default(cuid())
+  code        String    @unique @db.VarChar(16)
+  name        String    @db.VarChar(120)
+  description String    @db.VarChar(500)
+  severity    Severity
+  enabled     Boolean   @default(true)
+  config      Json      @default("{}")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  threats     Threat[]
+
+  @@index([enabled])
+}
+
+model Threat {
+  id             String        @id @default(cuid())
+  ruleId         String
+  sourceIp       String        @db.VarChar(45)
+  endpoint       String        @db.VarChar(2048)
+  severity       Severity
+  riskScore      Int
+  evidence       Json
+  occurrenceCount Int          @default(1)
+  status         ThreatStatus  @default(OPEN)
+  firstSeenAt    DateTime
+  lastSeenAt     DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  rule           DetectionRule @relation(fields: [ruleId], references: [id], onDelete: Restrict)
+  events         ThreatEvent[]
+  incidents      IncidentThreat[]
+
+  @@index([status, severity])
+  @@index([sourceIp])
+  @@index([createdAt])
+  @@index([ruleId])
+}
+
+model ThreatEvent {
+  threatId String
+  eventId  String
+  threat   Threat @relation(fields: [threatId], references: [id], onDelete: Cascade)
+  event    Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([threatId, eventId])
+  @@index([eventId])
+}
+
+model Incident {
+  id          String           @id @default(cuid())
+  title       String           @db.VarChar(200)
+  description String           @db.VarChar(4000)
+  status      IncidentStatus   @default(OPEN)
+  createdById String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  resolvedAt  DateTime?
+  createdBy   User             @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  threats     IncidentThreat[]
+  notes       IncidentNote[]
+
+  @@index([status, updatedAt])
+  @@index([createdById])
+}
+
+model IncidentThreat {
+  incidentId String
+  threatId   String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  threat     Threat   @relation(fields: [threatId], references: [id], onDelete: Cascade)
+
+  @@id([incidentId, threatId])
+  @@index([threatId])
+}
+
+model IncidentNote {
+  id         String   @id @default(cuid())
+  incidentId String
+  authorId   String
+  content    String   @db.VarChar(4000)
+  createdAt  DateTime @default(now())
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([incidentId, createdAt])
+  @@index([authorId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String   @db.VarChar(80)
+  entityType String   @db.VarChar(80)
+  entityId   String?  @db.VarChar(120)
+  metadata   Json     @default("{}")
+  ipAddress  String?  @db.VarChar(45)
+  createdAt  DateTime @default(now())
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId])
+}
