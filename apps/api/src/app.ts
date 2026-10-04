@@ -1,4 +1,4 @@
-import cors from "cors";
+
 import express from "express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./lib/http.js";
@@ -13,14 +13,6 @@ import { simulatorRouter } from "./routes/simulator.js";
 import { env } from "./config/env.js";
 
 const app = express();
-
-app.use(
-  cors({
-    origin: [env.FRONTEND_URL, "https://aegistrace-not6.vercel.app"],
-    credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  }),
-);
 
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
