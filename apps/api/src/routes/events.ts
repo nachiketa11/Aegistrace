@@ -2,7 +2,6 @@ import { Router } from "express";
 import multer from "multer";
 import { z } from "zod";
 import { authenticate } from "../middleware/auth.js";
-import { ingestRateLimit } from "../middleware/rateLimits.js";
 import { validateBody } from "../middleware/validate.js";
 import { asyncHandler, HttpError } from "../lib/http.js";
 import { prisma } from "../lib/prisma.js";
@@ -31,13 +30,13 @@ eventsRouter.get("/:id", asyncHandler(async (req, res) => {
   if (!event) throw new HttpError(404, "Event not found");
   res.json({ data: event });
 }));
-eventsRouter.post("/", ingestRateLimit, validateBody(z.union([eventSchema, eventBatchSchema])), asyncHandler(async (req, res) => {
+eventsRouter.post("/", validateBody(z.union([eventSchema, eventBatchSchema])), asyncHandler(async (req, res) => {
   const payload = Array.isArray(req.body) ? req.body : [req.body];
   const result = await ingestEvents(payload);
   res.status(201).json({ data: result });
 }));
 
-eventsRouter.post("/upload", ingestRateLimit, upload.single("file"), asyncHandler(async (req, res) => {
+eventsRouter.post("/upload", upload.single("file"), asyncHandler(async (req, res) => {
   const file = req.file;
   if (!file) throw new HttpError(400, "Choose a JSON, JSONL, or CSV file");
   const filename = file.originalname.toLowerCase();
