@@ -6,7 +6,6 @@ import { env, isProduction } from "../config/env.js";
 import { writeAudit } from "../lib/audit.js";
 import { asyncHandler, HttpError } from "../lib/http.js";
 import { prisma } from "../lib/prisma.js";
-import { authRateLimit } from "../middleware/rateLimits.js";
 import { authenticate, hashToken, sessionCookieName } from "../middleware/auth.js";
 import { validateBody } from "../middleware/validate.js";
 import { loginSchema, registerSchema } from "../validation/schemas.js";
@@ -14,7 +13,7 @@ import { loginSchema, registerSchema } from "../validation/schemas.js";
 export const authRouter = Router();
 const cookieOptions = { httpOnly: true, secure: isProduction, sameSite: "lax" as const, path: "/", maxAge: 1000 * 60 * 60 * 24 * 7 };
 
-authRouter.post("/register", authRateLimit, validateBody(registerSchema), asyncHandler(async (req, res) => {
+authRouter.post("/register", validateBody(registerSchema), asyncHandler(async (req, res) => {
   const { name, email, password } = req.body as { name: string; email: string; password: string };
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new HttpError(409, "An account with this email already exists");
@@ -23,7 +22,7 @@ authRouter.post("/register", authRateLimit, validateBody(registerSchema), asyncH
   res.status(201).json({ data: { id: user.id, email: user.email, name: user.name, role: user.role } });
 }));
 
-authRouter.post("/login", authRateLimit, validateBody(loginSchema), asyncHandler(async (req, res) => {
+authRouter.post("/login", validateBody(loginSchema), asyncHandler(async (req, res) => {
   const { email, password } = req.body as { email: string; password: string };
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.passwordHash))) throw new HttpError(401, "Email or password is incorrect");
