@@ -1,5 +1,15 @@
 # React + TypeScript + Vite
 
+## Vercel Environment
+
+Set this environment variable in the Vercel project for production builds:
+
+```text
+VITE_API_URL=https://api-nachiketa-sharma.vercel.app
+```
+
+The API deployment should set `FRONTEND_URL=https://aegistrace-not6.vercel.app`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

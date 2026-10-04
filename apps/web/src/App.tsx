@@ -45,9 +45,10 @@ type IncidentRow = {
 };
 
 const colors = ['#8b5cf6', '#ef4444', '#f59e0b', '#10b981'];
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 
 async function fetchJson<T>(input: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, {
+  const response = await fetch(`${API_BASE_URL}${input}`, {
     credentials: 'include',
     ...init,
     headers: {
@@ -102,12 +103,12 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const refresh = async () => {
     try {
-      const result = await fetchJson<{ id: string; name: string; email: string; role: string }>(`/api/auth/me`);
+      const result = await fetchJson<{ data: { id: string; name: string; email: string; role: string } }>(`/api/auth/me`);
       setUser({
-        id: result.id,
-        name: result.name,
-        email: result.email,
-        role: result.role as User['role'],
+        id: result.data.id,
+        name: result.data.name,
+        email: result.data.email,
+        role: result.data.role as User['role'],
       });
     } catch {
       setUser(null);

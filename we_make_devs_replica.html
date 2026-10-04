@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Make Devs - Inspiring & Empowering Developers</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#070a11',
+                            card: '#0D1322',
+                            border: '#1E293B',
+                            accent: '#0066FF',
+                            accentHover: '#0052CC',
+                            cyan: '#00F0FF',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #070a11;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0066FF 0%, #00F0FF 50%, #A855F7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-border {
+            position: relative;
+            background: #0D1322;
+            border-radius: 1rem;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 1.05rem;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0,102,255,0.4), rgba(255,255,255,0.05), rgba(0,240,255,0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .glow-radial {
+            background: radial-gradient(circle at center, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070a11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0066FF;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-accent selection:text-white">
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#070a11]/85 backdrop-blur-xl border-b border-gray-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[1px] shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-all">
+                    <div class="w-full h-full bg-[#070a11] rounded-[11px] flex items-center justify-center font-bold text-lg text-white">
+                        &lt;/&gt;
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-black tracking-tight text-white group-hover:text-blue-400 transition-colors">We Make Devs</span>
+                    <span class="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Inspire • Learn • Empower</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#about" class="hover:text-brand-accent transition-colors">About</a>
+                <a href="#courses" class="hover:text-brand-accent transition-colors">Courses</a>
+                <a href="#events" class="hover:text-brand-accent transition-colors">Events & Hackathons</a>
+                <a href="#community" class="hover:text-brand-accent transition-colors">Community</a>
+                <a href="#testimonials" class="hover:text-brand-accent transition-colors">Testimonials</a>
+                <a href="#resources" class="hover:text-brand-accent transition-colors">Resources</a>
+            </nav>
+
+            <!-- CTA Action Buttons -->
+            <div class="hidden sm:flex items-center gap-4">
+                <button onclick="openModal('discord-modal')" class="relative group px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-accent hover:bg-brand-accentHover transition-all shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40">
+                    <i class="fa-brands fa-discord mr-2"></i> Join Discord
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-toggle" class="lg:hidden text-gray-300 hover:text-white p-2 rounded-lg bg-gray-900 border border-gray-800">
+                <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-[#070a11] border-b border-gray-800 px-6 py-6 space-y-4">
+            <a href="#about" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">About</a>
+            <a href="#courses" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">Courses</a>
+            <a href="#events" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">Events & Hackathons</a>
+            <a href="#community" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">Community</a>
+            <a href="#testimonials" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">Testimonials</a>
+            <a href="#resources" class="mobile-link block text-gray-300 hover:text-blue-400 font-medium text-base">Resources</a>
+            <div class="pt-4 border-t border-gray-800">
+                <button onclick="openModal('discord-modal')" class="w-full py-3 rounded-xl text-center font-semibold text-white bg-brand-accent hover:bg-brand-accentHover">
+                    <i class="fa-brands fa-discord mr-2"></i> Join Discord Community
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-36 pb-20 lg:pt-48 lg:pb-32 bg-grid-pattern overflow-hidden">
+        <!-- Glow Backdrops -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-blue-600/15 rounded-full blur-[140px] pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            
+            <!-- Pill Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-950/60 border border-blue-800/60 text-blue-400 text-xs sm:text-sm font-semibold mb-8 shadow-inner shadow-blue-500/10">
+                <span class="flex h-2 w-2 relative">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                <span>The Largest Student & Developer Community</span>
+                <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+            </div>
+
+            <!-- Hero Headline -->
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] max-w-5xl mx-auto">
+                Inspiring students to <br class="hidden sm:inline"/>
+                <span class="gradient-text">learn, build & grow</span> together.
+            </h1>
+
+            <!-- Hero Subtitle -->
+            <p class="mt-6 text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                We provide high-quality, completely free tech education, hands-on mentorship, open-source projects, and global hackathons to launch your developer career.
+            </p>
+
+            <!-- Hero Actions -->
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#courses" class="w-full sm:w-auto px-8 py-4 bg-brand-accent hover:bg-brand-accentHover text-white rounded-xl font-bold text-base transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02]">
+                    <i class="fa-solid fa-play mr-2"></i> Explore Free Courses
+                </a>
+                <button onclick="openModal('discord-modal')" class="w-full sm:w-auto px-8 py-4 bg-gray-900/90 hover:bg-gray-800 text-gray-200 border border-gray-800 rounded-xl font-bold text-base transition-all hover:border-gray-700">
+                    <i class="fa-brands fa-discord mr-2 text-indigo-400"></i> Join Discord
+                </button>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 border-t border-gray-800/80 pt-12">
+                <div class="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/50 backdrop-blur-sm">
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white gradient-text">150K+</h3>
+                    <p class="text-sm font-medium text-gray-400 mt-2">Active Developers</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/50 backdrop-blur-sm">
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white gradient-text">60+</h3>
+                    <p class="text-sm font-medium text-gray-400 mt-2">Free Workshops & Events</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/50 backdrop-blur-sm">
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white gradient-text">100%</h3>
+                    <p class="text-sm font-medium text-gray-400 mt-2">Free Quality Education</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/50 backdrop-blur-sm">
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-white gradient-text">$50K+</h3>
+                    <p class="text-sm font-medium text-gray-400 mt-2">Hackathon Prizes Awarded</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- What We Do / Features Section -->
+    <section id="about" class="py-24 bg-[#090e1a] border-y border-gray-800/60 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs uppercase font-extrabold tracking-widest text-blue-500 mb-2">Our Ecosystem</h2>
+                <p class="text-3xl sm:text-4xl font-black text-white">Empowering Your Developer Journey</p>
+                <p class="mt-4 text-gray-400 text-base">We provide a structured roadmap with everything you need to break into tech and thrive in open-source.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1 -->
+                <div class="gradient-border p-8 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Hands-on Courses</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Industry-level bootcamps covering DevOps, Cloud, Data Structures, Web3, and Full Stack development.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="gradient-border p-8 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-cyan-600/20 text-cyan-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Global Hackathons</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Compete in high-stakes hackathons, build portfolio-worthy projects, and earn prizes & mentorship.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="gradient-border p-8 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-purple-600/20 text-purple-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Open Source First</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Learn Git & GitHub workflows, contribute to real codebases, and prepare for programs like GSoC.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="gradient-border p-8 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-emerald-600/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Career & Placements</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Resume reviews, mock interviews, referral networks, and direct job opportunities from top tech firms.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-xs uppercase font-extrabold tracking-widest text-blue-500 mb-2">Curriculum</h2>
+                    <p class="text-3xl sm:text-4xl font-black text-white">Popular Free Learning Pathways</p>
+                </div>
+                
+                <!-- Filter Tabs -->
+                <div class="mt-6 md:mt-0 flex flex-wrap gap-2 bg-gray-900/80 p-1.5 rounded-xl border border-gray-800">
+                    <button onclick="filterCourses('all')" class="course-tab-btn active px-4 py-2 rounded-lg text-xs font-semibold text-white bg-brand-accent transition-all">All</button>
+                    <button onclick="filterCourses('devops')" class="course-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all">DevOps</button>
+                    <button onclick="filterCourses('dsa')" class="course-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all">DSA</button>
+                    <button onclick="filterCourses('web')" class="course-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all">Open Source</button>
+                </div>
+            </div>
+
+            <!-- Course Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="course-container">
+                
+                <!-- Course Item 1 -->
+                <div class="course-card bg-[#0D1322] border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300" data-category="devops">
+                    <div class="h-48 bg-gradient-to-br from-blue-900/60 to-slate-900 p-6 flex flex-col justify-between relative border-b border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-blue-600/30 text-blue-400 border border-blue-500/30 text-[11px] font-bold px-3 py-1 rounded-full uppercase">DevOps</span>
+                            <span class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 40+ Hours</span>
+                        </div>
+                        <i class="fa-solid fa-server text-5xl text-blue-400/80 self-center"></i>
+                        <span class="text-xs font-semibold text-gray-300">Instructor: Kunal Kushwaha</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Complete DevOps Bootcamp</h3>
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">Learn Linux, Docker, Kubernetes, CI/CD, Terraform, Prometheus, and Cloud Native DevOps from scratch.</p>
+                        <button onclick="openModal('course-modal')" class="w-full py-3 bg-gray-900 hover:bg-brand-accent text-white border border-gray-800 hover:border-transparent rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>View Roadmap & Lectures</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Item 2 -->
+                <div class="course-card bg-[#0D1322] border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300" data-category="dsa">
+                    <div class="h-48 bg-gradient-to-br from-purple-900/60 to-slate-900 p-6 flex flex-col justify-between relative border-b border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-purple-600/30 text-purple-400 border border-purple-500/30 text-[11px] font-bold px-3 py-1 rounded-full uppercase">Algorithms</span>
+                            <span class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 60+ Hours</span>
+                        </div>
+                        <i class="fa-solid fa-code text-5xl text-purple-400/80 self-center"></i>
+                        <span class="text-xs font-semibold text-gray-300">Instructor: Kunal Kushwaha</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Data Structures & Algorithms</h3>
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">Comprehensive Java-based DSA course covering recursion, trees, graphs, dynamic programming & interview prep.</p>
+                        <button onclick="openModal('course-modal')" class="w-full py-3 bg-gray-900 hover:bg-brand-accent text-white border border-gray-800 hover:border-transparent rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>View Roadmap & Lectures</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Item 3 -->
+                <div class="course-card bg-[#0D1322] border border-gray-800 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300" data-category="web">
+                    <div class="h-48 bg-gradient-to-br from-cyan-900/60 to-slate-900 p-6 flex flex-col justify-between relative border-b border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-cyan-600/30 text-cyan-400 border border-cyan-500/30 text-[11px] font-bold px-3 py-1 rounded-full uppercase">Open Source</span>
+                            <span class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 15+ Hours</span>
+                        </div>
+                        <i class="fa-brands fa-git-alt text-5xl text-cyan-400/80 self-center"></i>
+                        <span class="text-xs font-semibold text-gray-300">Instructor: Community Team</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white mb-2">Git & GitHub Masterclass</h3>
+                        <p class="text-gray-400 text-sm mb-6 line-clamp-2">Master version control, branches, pull requests, merge conflicts, and start contributing to top open-source repos.</p>
+                        <button onclick="openModal('course-modal')" class="w-full py-3 bg-gray-900 hover:bg-brand-accent text-white border border-gray-800 hover:border-transparent rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>View Roadmap & Lectures</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Events & Hackathons Section -->
+    <section id="events" class="py-24 bg-[#090e1a] border-y border-gray-800/60 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs uppercase font-extrabold tracking-widest text-blue-500 mb-2">Community Gatherings</h2>
+                <p class="text-3xl sm:text-4xl font-black text-white">Upcoming Events & Hackathons</p>
+                <p class="mt-4 text-gray-400">Join our worldwide live sessions, challenge yourself, and win prizes.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Event 1 -->
+                <div class="bg-[#0D1322] border border-gray-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-gray-700 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-3 py-1 rounded-full uppercase">Registration Open</span>
+                            <span class="text-xs font-semibold text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> Oct 24-26, 2026</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Global Open Source Hackathon</h3>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">48-hour online hackathon centered around building developer tools, cloud infrastructure plugins, and AI utilities.</p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-gray-800/80 pt-6">
+                        <div class="flex -space-x-2">
+                            <img class="w-8 h-8 rounded-full border-2 border-gray-900" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Participant">
+                            <img class="w-8 h-8 rounded-full border-2 border-gray-900" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Participant">
+                            <img class="w-8 h-8 rounded-full border-2 border-gray-900" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Participant">
+                            <span class="w-8 h-8 rounded-full bg-gray-800 border-2 border-gray-900 flex items-center justify-center text-[10px] font-bold text-gray-300">+2.4k</span>
+                        </div>
+                        <button onclick="alert('Registration confirmed! Check your Discord for access link.')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-xs transition-all">
+                            Register Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="bg-[#0D1322] border border-gray-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-gray-700 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-3 py-1 rounded-full uppercase">Live Workshop</span>
+                            <span class="text-xs font-semibold text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> Nov 10, 2026</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Cloud Native Architecture Masterclass</h3>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed">Deep dive into microservices orchestration, service meshes with Istio, and modern Kubernetes cluster management.</p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-gray-800/80 pt-6">
+                        <div class="flex -space-x-2">
+                            <img class="w-8 h-8 rounded-full border-2 border-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="Participant">
+                            <img class="w-8 h-8 rounded-full border-2 border-gray-900" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80" alt="Participant">
+                            <span class="w-8 h-8 rounded-full bg-gray-800 border-2 border-gray-900 flex items-center justify-center text-[10px] font-bold text-gray-300">+1.1k</span>
+                        </div>
+                        <button onclick="alert('Seat reserved! Reminder added to your schedule.')" class="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-semibold text-xs transition-all">
+                            Set Reminder
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs uppercase font-extrabold tracking-widest text-blue-500 mb-2">Wall of Love</h2>
+                <p class="text-3xl sm:text-4xl font-black text-white">What Our Community Members Say</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-[#0D1322] border border-gray-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "The DevOps bootcamp completely changed my career trajectory. I went from being completely confused about Kubernetes to landing a Cloud Engineer role!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <img class="w-10 h-10 rounded-full" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" alt="Avatar">
+                        <div>
+                            <h4 class="text-white text-sm font-bold">Aarav Sharma</h4>
+                            <p class="text-xs text-gray-500">DevOps Engineer @ Tech Corp</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-[#0D1322] border border-gray-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "The Git and GitHub series by We Make Devs helped me make my first contribution to a GSoC project. The community on Discord is super supportive!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <img class="w-10 h-10 rounded-full" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80" alt="Avatar">
+                        <div>
+                            <h4 class="text-white text-sm font-bold">Priya Verma</h4>
+                            <p class="text-xs text-gray-500">Open Source Contributor</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-[#0D1322] border border-gray-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        "Best community for learning DSA and software engineering principles. The quality of content easily rivals $1000 paid bootcamps."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <img class="w-10 h-10 rounded-full" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop&q=80" alt="Avatar">
+                        <div>
+                            <h4 class="text-white text-sm font-bold">Rohan Gupta</h4>
+                            <p class="text-xs text-gray-500">SDE Intern @ Global Startup</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-[#05080e] border-t border-gray-800/80 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-sm">
+                            &lt;/&gt;
+                        </div>
+                        <span class="text-xl font-bold text-white">We Make Devs</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm mb-6">
+                        An inclusive community inspiring and empowering developers globally through free quality education, open source, and events.
+                    </p>
+                    <div class="flex items-center gap-4 text-gray-400">
+                        <a href="https://discord.gg/wemakedevs" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center hover:text-indigo-400 hover:border-gray-700 transition-colors"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://youtube.com/@wemakedevs" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center hover:text-red-500 hover:border-gray-700 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://twitter.com/wemakedevs" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center hover:text-blue-400 hover:border-gray-700 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://github.com/wemakedevs" target="_blank" class="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center hover:text-white hover:border-gray-700 transition-colors"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+
+                <!-- Navigation Links 1 -->
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Explore</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#courses" class="hover:text-white transition-colors">Free Bootcamps</a></li>
+                        <li><a href="#events" class="hover:text-white transition-colors">Hackathons</a></li>
+                        <li><a href="#testimonials" class="hover:text-white transition-colors">Wall of Love</a></li>
+                    </ul>
+                </div>
+
+                <!-- Navigation Links 2 -->
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Resources</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">DevOps Roadmap</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">DSA Notes</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Open Source Guide</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog & Articles</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Newsletter</h4>
+                    <p class="text-xs text-gray-400 mb-4">Get weekly dev tips, course releases, and hackathon alerts.</p>
+                    <form onsubmit="event.preventDefault(); alert('Subscribed successfully!');" class="space-y-2">
+                        <input type="email" placeholder="enter your email" required class="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-sm text-white focus:outline-none focus:border-blue-500">
+                        <button type="submit" class="w-full py-2.5 bg-brand-accent hover:bg-brand-accentHover text-white rounded-xl text-xs font-semibold transition-all">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-800/60 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>&copy; 2026 We Make Devs. Replica built for project development.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                    <a href="#" class="hover:text-gray-400">Code of Conduct</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Discord Modal Overlay -->
+    <div id="discord-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0D1322] border border-gray-800 rounded-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeModal('discord-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-brands fa-discord"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Join We Make Devs Discord</h3>
+                <p class="text-gray-400 text-sm mb-6">Connect with over 100,000+ developers, get instant help with code, find project collaborators, and participate in live study sessions.</p>
+                <a href="https://discord.gg/wemakedevs" target="_blank" class="block w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-all mb-3">
+                    Redirect to Discord Invite
+                </a>
+                <button onclick="closeModal('discord-modal')" class="text-xs text-gray-500 hover:text-gray-300">
+                    Maybe later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Preview Modal Overlay -->
+    <div id="course-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0D1322] border border-gray-800 rounded-2xl max-w-lg w-full p-6 relative">
+            <button onclick="closeModal('course-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-2">Course Module Overview</h3>
+            <p class="text-gray-400 text-sm mb-4">Access completely free curriculum hosted on YouTube and GitHub repositories.</p>
+            
+            <div class="space-y-3 mb-6">
+                <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex justify-between items-center text-sm">
+                    <span class="text-gray-200 font-medium">Module 1: Introduction & Prerequisites</span>
+                    <span class="text-xs text-blue-400">Available</span>
+                </div>
+                <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex justify-between items-center text-sm">
+                    <span class="text-gray-200 font-medium">Module 2: Hands-on Projects & Workflow</span>
+                    <span class="text-xs text-blue-400">Available</span>
+                </div>
+                <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex justify-between items-center text-sm">
+                    <span class="text-gray-200 font-medium">Module 3: Advanced Concepts & Deployments</span>
+                    <span class="text-xs text-blue-400">Available</span>
+                </div>
+            </div>
+
+            <a href="https://youtube.com" target="_blank" class="block w-full py-3 text-center bg-brand-accent hover:bg-brand-accentHover text-white rounded-xl font-bold text-sm transition-all">
+                Open YouTube Playlist
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Logic JavaScript -->
+    <script>
+        // Mobile Navigation Toggle Logic
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Modal Handler Functions
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Course Category Filter Function
+        function filterCourses(category) {
+            const cards = document.querySelectorAll('.course-card');
+            const buttons = document.querySelectorAll('.course-tab-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-brand-accent', 'text-white');
+                btn.classList.add('text-gray-400');
+            });
+
+            event.target.classList.add('active', 'bg-brand-accent', 'text-white');
+            event.target.classList.remove('text-gray-400');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
